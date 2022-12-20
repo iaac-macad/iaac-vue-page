@@ -1,5 +1,12 @@
 <template>
-  <h1>iaac testing vue</h1>
+  <nav class="flex items-center justify-between flex-wrap bg-black/70 p-1">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+      <img class="p-2 h-13" alt="Iaac logo" src="./assets/iaac-white.png" />
+      <h2 class="font-semibold text-xl tracking-tight">
+        Digital Tools for Cloud-based Data Management
+      </h2>
+    </div>
+  </nav>
 </template>
 
 <script setup>
