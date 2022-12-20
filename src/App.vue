@@ -7,10 +7,16 @@
       </h2>
     </div>
   </nav>
+
+  <nav class="flex">
+    <Sidebar />
+    <GeometryView/>
+  </nav>
 </template>
 
 <script setup>
-
+import GeometryView from './components/GeometryView.vue'
+import Sidebar from "./components/Sidebar.vue";
 </script>
 
 <style>
@@ -20,6 +26,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
