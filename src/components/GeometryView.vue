@@ -1,6 +1,23 @@
 <template>
-    <div id="viewport" class="flex flex-col p-4">
-      <button
+  <div id="viewport" class="flex flex-col p-4">
+    <button class="
+        bg-blue-500
+        hover:bg-blue-400
+        text-white
+        font-bold
+        py-2
+        px-4
+        border-b-4 border-blue-700
+        hover:border-blue-500
+        rounded
+      " @click="initScene">
+      do something with threejs
+    </button>
+    <div id="threejs-container" class="py-5"></div>
+  </div>
+
+  <div id="viewport" class="flex flex-col p-4 lazy">
+    <button
       class="
         bg-blue-500
         hover:bg-blue-400
@@ -12,19 +29,20 @@
         hover:border-blue-500
         rounded
       "
-      @click="initScene"
+      @click="initRhinoScene"
     >
-      do something with threejs
+      do something with rhino
     </button>
-    <div id="threejs-container" class="py-5"></div>
-    </div>
+
+    <div id="rhino-container" class="py-5"></div>
+  </div>
 </template>
 
 <script setup>
 // Imports;
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
+import { Rhino3dmLoader } from "three/examples/jsm/loaders/3DMLoader";
 
 // Three js objects
 let renderer = null;
@@ -32,11 +50,10 @@ let camera = null;
 let scene = null;
 let controls = null;
 
-function initScene()
-{  
-  let width = 500;
-  let heigh = 700;
+let width = 500;
+let heigh = 700;
 
+function initScene() {
   // rendeder
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, heigh);
@@ -53,7 +70,7 @@ function initScene()
 
   // orbit controls
   controls = new OrbitControls(camera, renderer.domElement);
-  
+
   // add fun shape
   const geometry = new THREE.TorusKnotGeometry(8, 3, 150, 16);
   const material = new THREE.MeshNormalMaterial();
@@ -69,6 +86,51 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+
+// Rhino scene setup
+// for rhino vierwport
+let rendererRH = null;
+let cameraRH = null;
+let sceneRH = null;
+let controlsRH = null;
+
+// slighly ugly repeated code but it's just here for test!
+function initRhinoScene() {
+  // rendeder
+  rendererRH = new THREE.WebGLRenderer();
+  rendererRH.setSize(width, heigh);
+  rendererRH.setPixelRatio(window.devicePixelRatio);
+  document.getElementById("rhino-container").appendChild(rendererRH.domElement);
+
+  // camera
+  cameraRH = new THREE.PerspectiveCamera(75, width / heigh, 0.1, 1000);
+  cameraRH.position.set(0, -20, 40);
+
+  // scene
+  sceneRH = new THREE.Scene();
+  sceneRH.background = new THREE.Color("#f5f6fa");
+
+  // orbit controls
+  controlsRH = new OrbitControls(cameraRH, rendererRH.domElement);
+
+  const loader = new Rhino3dmLoader();
+  loader.setLibraryPath("https://cdn.jsdelivr.net/npm/rhino3dm@0.15.0-beta/");
+
+  loader.load(
+    "https://files.mcneel.com/rhino3dm/models/RhinoLogo.3dm",
+    function (object) {
+      sceneRH.add(object);
+    }
+  );
+
+  animateRh();
+}
+
+function animateRh() {
+  requestAnimationFrame(animateRh);
+  controlsRH.update();
+  rendererRH.render(sceneRH, cameraRH);
+}
 </script>
 
 <style scoped>
@@ -79,7 +141,7 @@ function animate() {
   border-radius: 10px;
   margin: 12px;
   height: calc(100vh - 105px);
-  width: calc(100vw - 105px);
+  width: 600px;
   min-width: 200px;
 }
 </style>
